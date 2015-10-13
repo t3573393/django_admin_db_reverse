@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<h1>input the db info</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'db_reverse:save_db_info' %}" method="post">
+{% csrf_token %}
+    ip:<input name="ip" type="text" /><br/>
+    port:<input name="port" type="text" /><br/>
+    data_base:<input name="data_base" type="text" /><br/>
+    <input type="submit" value="save" />&nbsp;&nbsp;
+    <input type="reset" value="reset" />
+</form>
+</body>
+</html>
