@@ -7,9 +7,11 @@ def get_db_all_info():
     result = {}
     tables = get_all_table()
     for a_table in tables:
-        columns = get_all_column_by_table_name(a_table)
-        constraints = get_table_constraints(a_table)
-        result[a_table] = {
+        table_name = a_table['TABLE_NAME']
+        columns = get_all_column_by_table_name(table_name)
+        constraints = get_table_constraints(table_name)
+        result[table_name] = {
+            'comment': a_table['TABLE_COMMENT'],
             'columns': columns,
             'constraints': constraints
         }
@@ -20,7 +22,7 @@ def get_all_table():
     conn = dbpool.connection()
     sqlstr = '''
     SELECT
-      TABLE_NAME
+      TABLE_NAME, TABLE_COMMENT
     FROM
         information_schema.TABLES
     WHERE
@@ -32,16 +34,16 @@ def get_all_table():
     result = cursor.fetchall()
     cursor.close()
     conn.close()
-    return [a['TABLE_NAME'] for a in result]
+    return result
+    # return [result[0]]
 
 
 def get_all_column_by_table_name(table_name):
     conn = dbpool.connection()
     sqlstr = """SELECT  `COLUMN_NAME` ,`DATA_TYPE` , `COLUMN_TYPE`,
-    CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE
+    CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, COLUMN_COMMENT, IS_NULLABLE
     FROM information_schema.`COLUMNS`
     where TABLE_SCHEMA= DATABASE() AND TABLE_NAME = '%s' """ % table_name
-    print sqlstr
     cursor = conn.cursor(cursorclass=DictCursor)
     cursor.execute(sqlstr)
     result = cursor.fetchall()

@@ -1,19 +1,25 @@
-from .models import {% for a_model in render_data %} {{ a_model.model_name }}, {% endfor %}
+#coding:utf8
+
+from django.contrib import admin
+from .models import {% for a_model in render_data %} {{ a_model.model_name }}{% if not forloop.last %},{% endif %}{% endfor %}
 
 {% for a_model in render_data %}
-{% endfor %}
-class MyArenaLogAdmin(admin.ModelAdmin):
+class My{{ a_model.model_name }}Admin(admin.ModelAdmin):
     """
-    自定义 ArenaLogModel
+    自定义 {{ a_model.model_name }}
     """
     # 展示表列数据
-    list_display = ("id", "from_id", "to_id", "is_success", "ranking_change", "record_time", "score")
-    readonly_fields = ("id", )
+    list_display = ({% for a_column_name in a_model.column_names %}"{{a_column_name}}",{% endfor %})
+    readonly_fields = ({% for a_primary_key in a_model.primary_keys %}"{{a_primary_key}}",{% endfor %})
     # 搜索栏
-    search_fields = ("id",)
+    search_fields = ({% for a_primary_key in a_model.primary_keys %}"{{a_primary_key}}",{% endfor %})
     # 过滤器
-    list_filter = ("id",)
+    list_filter = ({% for a_primary_key in a_model.primary_keys %}"{{a_primary_key}}",{% endfor %})
     # 排序
-    ordering = ("id",)
+    ordering = ({% for a_primary_key in a_model.primary_keys %}"{{a_primary_key}}",{% endfor %})
     # 每页显示数据条数
     list_per_page = 10
+
+admin.site.register({{ a_model.model_name }}, My{{ a_model.model_name }}Admin)
+
+{% endfor %}

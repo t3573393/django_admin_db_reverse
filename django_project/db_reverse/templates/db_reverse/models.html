@@ -1,10 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+#coding:utf8
 
-</body>
-</html>
+from __future__ import unicode_literals
+from django.db import models
+
+{% for a_model in render_data %}
+class {{ a_model.model_name }}(models.Model):
+
+    {% for a_column in a_model.columns %}
+    {% if a_column.data_type == 'int' %}
+    {{ a_column.name }} = models.IntegerField({% if a_column.primary_key %}primary_key=True{% elif a_column.null %}null=True{% endif %})
+    {% elif a_column.data_type == 'bigint'  %}
+    {{ a_column.name }} = models.BigIntegerField({% if a_column.primary_key %}primary_key=True{% elif a_column.null %}null=True{% endif %})
+    {% elif a_column.data_type == 'datetime'  %}
+    {{ a_column.name }} = models.DateTimeField({% if a_column.null %}null=True{% endif %})
+    {% elif a_column.data_type == 'varchar'  %}
+    {{ a_column.name }} = models.CharField({% if a_column.primary_key %}primary_key=True,{% endif %}max_length={{ a_column.max_length }}{% if a_column.null %},null=True{% endif %})
+    {% elif a_column.data_type == 'decimal'  %}
+    {{ a_column.name }} = models.DecimalField(max_digits={{ a_column.precision }}, decimal_places={{ a_column.scale }}, verbose_name=u'{{ a_column.comment }}'{% if a_column.null %},null=True{% endif %}){% endif %}
+    {% endfor %}
+
+    {% for a_column in a_model.columns %}
+    {% if a_column.data_type !=  'decimal' %}
+    {{ a_column.name }}.verbose_name = u'{{ a_column.comment }}'
+    {% endif %}
+    {% endfor %}
+
+    class Meta:
+        managed = False
+        db_table = '{{ a_model.table_name }}'
+        verbose_name = u'{{ a_model.comment }}'
+        verbose_name_plural = u'{{ a_model.comment }}'
+        {% if a_model.unique_keys %}
+        unique_together = ({% for unique_list in a_model.unique_keys.values %}({% for unique_key in unique_list %}'{{ unique_key }}',{% endfor %}),{% endfor %})
+        {% endif %}
+
+{% endfor %}
