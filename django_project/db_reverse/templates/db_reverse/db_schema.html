@@ -6,5 +6,23 @@
 </head>
 <body>
 <h1>db_schema</h1>
+<form action="{% url 'db_reverse:generate_code' %}" method="post">
+{% csrf_token %}
+    <input type="submit" value="generate" />
+</form>
+<table>
+    <tbody>
+        <tr>
+            <th>table name</th>
+        </tr>
+        {% for table in table_list %}
+            <tr>
+                <td>
+                        {{ table.TABLE_NAME }}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 </body>
 </html>

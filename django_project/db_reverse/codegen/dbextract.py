@@ -1,0 +1,68 @@
+#coding:utf8
+from db_reverse.dbpool import dbpool
+from MySQLdb.cursors import DictCursor
+
+
+def get_db_all_info():
+    result = {}
+    tables = get_all_table()
+    for a_table in tables:
+        columns = get_all_column_by_table_name(a_table)
+        constraints = get_table_constraints(a_table)
+        result[a_table] = {
+            'columns': columns,
+            'constraints': constraints
+        }
+    return result
+
+
+def get_all_table():
+    conn = dbpool.connection()
+    sqlstr = '''
+    SELECT
+      TABLE_NAME
+    FROM
+        information_schema.TABLES
+    WHERE
+        TABLE_SCHEMA = DATABASE()
+            and Table_type = 'BASE TABLE'
+    '''
+    cursor = conn.cursor(cursorclass=DictCursor)
+    cursor.execute(sqlstr)
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return [a['TABLE_NAME'] for a in result]
+
+
+def get_all_column_by_table_name(table_name):
+    conn = dbpool.connection()
+    sqlstr = """SELECT  `COLUMN_NAME` ,`DATA_TYPE` , `COLUMN_TYPE`,
+    CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE
+    FROM information_schema.`COLUMNS`
+    where TABLE_SCHEMA= DATABASE() AND TABLE_NAME = '%s' """ % table_name
+    print sqlstr
+    cursor = conn.cursor(cursorclass=DictCursor)
+    cursor.execute(sqlstr)
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+
+
+def get_table_constraints(table_name):
+    sql = """SELECT k.COLUMN_NAME, t.CONSTRAINT_TYPE, t.CONSTRAINT_NAME
+                FROM information_schema.table_constraints t
+                JOIN information_schema.key_column_usage k
+                USING ( constraint_name, table_schema, table_name )
+                WHERE t.table_schema =  DATABASE()
+                AND t.table_name =  '%s'
+        """ % table_name
+    conn = dbpool.connection()
+    cursor = conn.cursor(cursorclass=DictCursor)
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return result
+

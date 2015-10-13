@@ -1,0 +1,19 @@
+from .models import {% for a_model in render_data %} {{ a_model.model_name }}, {% endfor %}
+
+{% for a_model in render_data %}
+{% endfor %}
+class MyArenaLogAdmin(admin.ModelAdmin):
+    """
+    自定义 ArenaLogModel
+    """
+    # 展示表列数据
+    list_display = ("id", "from_id", "to_id", "is_success", "ranking_change", "record_time", "score")
+    readonly_fields = ("id", )
+    # 搜索栏
+    search_fields = ("id",)
+    # 过滤器
+    list_filter = ("id",)
+    # 排序
+    ordering = ("id",)
+    # 每页显示数据条数
+    list_per_page = 10
