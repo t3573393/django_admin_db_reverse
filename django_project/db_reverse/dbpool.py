@@ -17,15 +17,14 @@ class MultiDBPool(object):
         """
         _creator = DBCS.get(dbconfig.get('engine','MySQLdb'))
         creator = __import__(_creator)
-        print 'dbconfig:', dbconfig
-        self.dbpool = PooledDB(creator,**dbconfig)
+        self.dbpool = PooledDB(creator, **dbconfig)
             
     def bind_router(self,router):
         """
         """
         self.router = router()
         
-    def getPool(self,write=True,**kw):
+    def getPool(self, write=True, **kw):
         """
         """
         if not self.router:
@@ -35,7 +34,7 @@ class MultiDBPool(object):
         else:
             return self.dbpool
         
-    def connection(self,write=True,**kw):
+    def connection(self, write=True, **kw):
         """
         """
         if not self.router:

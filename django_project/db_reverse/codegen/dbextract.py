@@ -4,7 +4,7 @@ from MySQLdb.cursors import DictCursor
 
 
 def get_db_all_info():
-    result = {}
+    result = dict()
     tables = get_all_table()
     for a_table in tables:
         table_name = a_table['TABLE_NAME']
@@ -41,9 +41,9 @@ def get_all_table():
 def get_all_column_by_table_name(table_name):
     conn = dbpool.connection()
     sqlstr = """SELECT  `COLUMN_NAME` ,`DATA_TYPE` , `COLUMN_TYPE`,
-    CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, COLUMN_COMMENT, IS_NULLABLE
+    CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE, COLUMN_COMMENT, IS_NULLABLE, COLUMN_COMMENT
     FROM information_schema.`COLUMNS`
-    where TABLE_SCHEMA= DATABASE() AND TABLE_NAME = '%s' """ % table_name
+    WHERE TABLE_SCHEMA= DATABASE() AND TABLE_NAME = '%s' """ % table_name
     cursor = conn.cursor(cursorclass=DictCursor)
     cursor.execute(sqlstr)
     result = cursor.fetchall()

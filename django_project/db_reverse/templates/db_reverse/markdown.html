@@ -1,0 +1,5 @@
+{% for a_model in render_data %}
+===== {{ loop.index }}、{{ a_model.table_name }}表结构 =====
+^ 字段名称  ^  字段类型 ^ 字段描述^
+{% for a_column in a_model.columns %}|{{ a_column.name }} |{% if a_column.data_type == 'int' %}int({{a_column.precision}}){% elif a_column.data_type == 'bigint' %}bigint({{a_column.precision}}){% elif a_column.data_type == 'datetime'  %}datetime{% elif a_column.data_type == 'date'  %}date{% elif a_column.data_type == 'varchar'  %}varchar({{a_column.max_length}}){% elif a_column.data_type == 'decimal'  %}decimal({{a_column.precision}},{{a_column.scale}}){% else %}{{a_column.data_type}}{% endif %}|{{ a_column.comment }}  |
+{% endfor %}{% endfor %}

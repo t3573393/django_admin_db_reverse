@@ -9,7 +9,7 @@ class {{ a_model.model_name }}(models.Model):
     {% for a_column in a_model.columns %}
     {% if a_column.data_type == 'int' %}
     {{ a_column.name }} = models.IntegerField({% if a_column.primary_key %}primary_key=True{% elif a_column.null %}null=True{% endif %})
-    {% elif a_column.data_type == 'bigint'  %}
+    {% elif a_column.data_type == 'bigint' %}
     {{ a_column.name }} = models.BigIntegerField({% if a_column.primary_key %}primary_key=True{% elif a_column.null %}null=True{% endif %})
     {% elif a_column.data_type == 'datetime'  %}
     {{ a_column.name }} = models.DateTimeField({% if a_column.null %}null=True{% endif %})

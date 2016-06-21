@@ -7,8 +7,13 @@
 <body>
 <h1>db_schema</h1>
 <form action="{% url 'db_reverse:generate_code' %}" method="post">
-{% csrf_token %}
+    {% csrf_token %}
     <input type="submit" value="generate" />
+</form>
+<form action="{% url 'db_reverse:generate_markdown' %}" method="post">
+    {% csrf_token %}
+
+    <input type="submit" value="generate markdown" />
 </form>
 <table>
     <tbody>

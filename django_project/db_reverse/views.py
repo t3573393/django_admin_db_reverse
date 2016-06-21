@@ -12,6 +12,7 @@ import os
 from django_project.settings import BASE_DIR
 from db_reverse.codegen import main
 
+
 def index(request):
     context = {}
     return render(request, 'db_reverse/index.html', context)
@@ -33,7 +34,7 @@ def save_db_info(request):
         "user": user,
         "passwd": passwd,
         "port": port,
-        "charset": "utf8mb4",
+        "charset": "utf8",
         "maxconnections": 5,
         "maxcached": 5,
         "blocking": 1
@@ -71,4 +72,10 @@ def generate_code(request):
     main.generate_file()
     root_folder = BASE_DIR
     filepath = '%s/result.zip' % root_folder
+    return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+
+def generate_markdown(request):
+    main.generate_file(2)
+    root_folder = BASE_DIR
+    filepath = '%s/db_reverse/temp/tables.md' % root_folder
     return serve(request, os.path.basename(filepath), os.path.dirname(filepath))

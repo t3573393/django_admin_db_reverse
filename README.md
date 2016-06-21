@@ -1,6 +1,6 @@
 # django_admin_db_reverse
 
-reverse the db schema to the django models.py and admin.py
+reverse the db schema to the django models.py and admin.py, support markdown template
 now just support the mysql database.
 it composes of these step:
 1. get the db schema data

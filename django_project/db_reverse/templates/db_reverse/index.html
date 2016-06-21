@@ -10,12 +10,12 @@
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 <form action="{% url 'db_reverse:save_db_info' %}" method="post">
-{% csrf_token %}
-    ip:<input name="ip" type="text" /><br/>
-    port:<input name="port" type="text" /><br/>
-    data_base:<input name="data_base" type="text" /><br/>
-    user:<input name="user" type="text" /><br/>
-    passwd:<input name="passwd" type="text" /><br/>
+    {% csrf_token %}
+    ip:<input name="ip" type="text" value="127.0.0.1" /><br/>
+    port:<input name="port" type="text" value="3306" /><br/>
+    data_base:<input name="data_base" type="text" value="sakila" /><br/>
+    user:<input name="user" type="text" value="root" /><br/>
+    passwd:<input name="passwd" type="text" value="root" /><br/>
     <input type="submit" value="save" />&nbsp;&nbsp;
     <input type="reset" value="reset" />
 </form>
